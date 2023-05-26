@@ -180,6 +180,13 @@ pub mod pallet {
                     _ => log!(error, "Failed to execute L1 messages: {:?}", err),
                 },
             }
+
+            match Self::fetch_l1_gas_price() {
+                Ok(_) => log!(info, "Successfully fetched the L1 gas price"),
+                Err(err) => match err {
+                    _ => log!(error, "Failed to fetch L1 gas price: {:?}", err),
+                },
+            }
         }
     }
 

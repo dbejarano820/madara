@@ -16,6 +16,9 @@ use crate::{Config, Pallet, ETHEREUM_EXECUTION_RPC};
 pub const LAST_FINALIZED_BLOCK_QUERY: &str =
     r#"{"jsonrpc": "2.0", "method": "eth_getBlockByNumber", "params": ["finalized", true], "id": 0}"#;
 
+pub const GAS_PRICE_QUERY: &str =
+    r#"{"jsonrpc":"2.0","method":"eth_gasPrice","params":[],"id":73}"#;
+
 impl<T: Config> Pallet<T> {
     /// Fetches L1 messages and execute them.
     /// This function is called by the offchain worker.
@@ -42,6 +45,13 @@ impl<T: Config> Pallet<T> {
                     .map_err(OffchainWorkerError::ConsumeMessageError)
             })?;
         }
+        Ok(())
+    }
+
+    pub(crate) fn fetch_l1_gas_price() -> Result<(), OffchainWorkerError> {
+        // Query L1 for the current gas price.
+        let _raw_body = query_eth(GAS_PRICE_QUERY)?;
+        log::debug!("Current price: {:?}", _raw_body);
         Ok(())
     }
 }

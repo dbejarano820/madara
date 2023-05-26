@@ -7,6 +7,7 @@ use serde::Deserialize;
 use sp_runtime::offchain::http::Error;
 use sp_runtime::offchain::HttpError;
 use sp_runtime::DispatchError;
+use sp_core::{U256};
 
 use crate::message::Message;
 
@@ -26,6 +27,7 @@ pub enum OffchainWorkerError {
     GetStorageFailed,
     EthRpcNotSet,
     FormatBytesFailed,
+    FetchL1GasPriceFailed,
 }
 
 /// Struct that represents the response fields that we need of the eth node for
@@ -34,6 +36,13 @@ pub enum OffchainWorkerError {
 pub struct EthGetBlockByNumberResponse {
     /// Object that contains the block number.
     pub result: NumberRes,
+}
+
+/// Struct that represents the response fields that we need of the eth node for
+/// `eth_getGasPrice`.
+#[derive(Deserialize, Encode, Decode, Default, Debug)]
+pub struct EthGetGasPriceResponse {
+    pub result: GasRes,
 }
 
 impl TryFrom<EthGetBlockByNumberResponse> for u64 {
@@ -49,6 +58,13 @@ impl TryFrom<EthGetBlockByNumberResponse> for u64 {
 pub struct NumberRes {
     /// Block number.
     pub number: String,
+}
+
+/// Inner struct for gas price.
+#[derive(Deserialize, Encode, Decode, Default, Debug)]
+pub struct GasRes {
+    /// Block number.
+    pub number: U256,
 }
 
 /// Struct that represents an Ethereum event for a message sent to starknet.
