@@ -7,7 +7,7 @@
 | Parent block hash      | :white_check_mark: |
 | Block number           | :white_check_mark: |
 | Global state root      | :construction:     |
-| Sequencer address      | :construction:     |
+| Sequencer address      | :white_check_mark: |
 | Block timestamp        | :white_check_mark: |
 | Transaction count      | :white_check_mark: |
 | Transaction commitment | :white_check_mark: |

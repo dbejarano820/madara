@@ -100,11 +100,8 @@ use crate::types::{ContractStorageKeyWrapper, NonceWrapper, StorageKeyWrapper};
 
 pub(crate) const LOG_TARGET: &str = "runtime::starknet";
 
-// TODO: don't use a const for this but a real sequencer address for block header
-// FIXME https://github.com/keep-starknet-strange/madara/issues/243
-pub const SEQUENCER_ADDRESS: [u8; 32] =
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2];
 
+pub const SEQUENCER_ADDRESS: &[u8] = b"starknet::SEQUENCER_ADDRESS";
 pub const ETHEREUM_EXECUTION_RPC: &[u8] = b"starknet::ETHEREUM_EXECUTION_RPC";
 pub const ETHEREUM_CONSENSUS_RPC: &[u8] = b"starknet::ETHEREUM_CONSENSUS_RPC";
 
@@ -962,7 +959,7 @@ impl<T: Config> Pallet<T> {
         let global_state_root = Felt252Wrapper::ZERO;
         // TODO: use the real sequencer address (our own address)
         // FIXME #243
-        let sequencer_address = SEQUENCER_ADDRESS;
+        let sequencer_address = SEQUENCER_ADDRESS; //retrieve sequencer address from inherent transaction
         let block_timestamp = Self::block_timestamp();
         let transaction_count = pending.len() as u128;
 

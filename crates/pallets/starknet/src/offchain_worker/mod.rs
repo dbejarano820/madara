@@ -11,7 +11,7 @@ use sp_runtime::offchain::storage::StorageValueRef;
 pub use types::*;
 
 use crate::message::get_messages_events;
-use crate::{Config, Pallet, ETHEREUM_EXECUTION_RPC};
+use crate::{Config, Pallet, ETHEREUM_EXECUTION_RPC, SEQUENCER_ADDRESS};
 
 pub const LAST_FINALIZED_BLOCK_QUERY: &str =
     r#"{"jsonrpc": "2.0", "method": "eth_getBlockByNumber", "params": ["finalized", true], "id": 0}"#;
@@ -61,6 +61,23 @@ fn get_eth_rpc_url() -> Result<String, OffchainWorkerError> {
     }
 
     Ok(endpoint.to_string())
+}
+
+/// Returns Sequencer Address from Storage
+fn get_sequencer_address() -> Result<[u8; 32], OffchainWorkerError> {
+    let sequencer_address: Option<Vec<u8>> = StorageValueRef::persistent(SEQUENCER_ADDRESS)
+        .get()
+        .map_err(|_| OffchainWorkerError::GetStorageFailed)?;
+
+    let address = sequencer_address.ok_or(OffchainWorkerError::SequencerAddressNotSet)?;
+
+    if address.is_empty() {
+        return Err(OffchainWorkerError::SequencerAddressNotSet);
+    }
+
+    let hash: [u8; 32] = address.try_into().map_err(|_| OffchainWorkerError::InvalidHashLength)?;
+
+    Ok(hash)
 }
 
 /// Queries an Eth json rpc node

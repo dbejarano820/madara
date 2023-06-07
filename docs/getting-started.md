@@ -180,7 +180,7 @@ provided by Substrate.
 
 In the polkadot explorer, navigate to Developer > RPC calls and choose the
 `offchain` endpoint. In there, you can set the value for
-`ETHEREUM_EXECUTION_RPC` by using the `localStorageSet` function. You need to
+`ETHEREUM_EXECUTION_RPC` and `SEQUENCER_ADDRESS` by using the `localStorageSet` function. You need to
 select the type of storage, in this case `PERSISTENT`, and use the
 `starknet::ETHEREUM_EXECUTION_RPC` as the `key`. The value is the RPC URL you
 intend to use.
