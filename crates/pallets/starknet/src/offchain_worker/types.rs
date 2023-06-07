@@ -26,8 +26,6 @@ pub enum OffchainWorkerError {
     GetStorageFailed,
     EthRpcNotSet,
     FormatBytesFailed,
-    SequencerAddressNotSet,
-    InvalidHashLength,
 }
 
 /// Struct that represents the response fields that we need of the eth node for

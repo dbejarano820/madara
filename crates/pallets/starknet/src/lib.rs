@@ -102,6 +102,9 @@ pub(crate) const LOG_TARGET: &str = "runtime::starknet";
 
 
 pub const SEQUENCER_ADDRESS: &[u8] = b"starknet::SEQUENCER_ADDRESS";
+pub const SEQUENCER_ADDRESS_DEFAULT: [u8; 32] =
+[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2];
+
 pub const ETHEREUM_EXECUTION_RPC: &[u8] = b"starknet::ETHEREUM_EXECUTION_RPC";
 pub const ETHEREUM_CONSENSUS_RPC: &[u8] = b"starknet::ETHEREUM_CONSENSUS_RPC";
 
@@ -183,6 +186,14 @@ pub mod pallet {
                         log!(info, "No last known Ethereum block number found. Skipping execution of L1 messages.")
                     }
                     _ => log!(error, "Failed to execute L1 messages: {:?}", err),
+                },
+            }
+            
+            //for testing purposes.. will refactor before merge.. here we broadcast inherent tx (?)
+            match Self::get_sequencer_address() {
+                Ok(res) => log!(info, "Sequencer address: {:?}", res),
+                Err(err) => match err {
+                    _ => log!(error, "Failed to get sequencer address: {:?}", err),
                 },
             }
         }
@@ -819,7 +830,7 @@ impl<T: Config> Pallet<T> {
         let fee_token_address =
             ContractAddress::try_from(StarkFelt::new(Self::fee_token_address().into()).unwrap()).unwrap();
         let chain_id = Self::chain_id_str();
-        let sequencer_address = ContractAddress(starknet_api::api_core::PatriciaKey(StarkFelt(SEQUENCER_ADDRESS)));
+        let sequencer_address = ContractAddress(starknet_api::api_core::PatriciaKey(StarkFelt(SEQUENCER_ADDRESS_DEFAULT))); //will change
         let vm_resource_fee_cost = HashMap::default();
         // FIXME: https://github.com/keep-starknet-strange/madara/issues/545
         let invoke_tx_max_n_steps = 1000000;
@@ -959,7 +970,7 @@ impl<T: Config> Pallet<T> {
         let global_state_root = Felt252Wrapper::ZERO;
         // TODO: use the real sequencer address (our own address)
         // FIXME #243
-        let sequencer_address = SEQUENCER_ADDRESS; //retrieve sequencer address from inherent transaction
+        let sequencer_address = SEQUENCER_ADDRESS_DEFAULT; //will change to retrieve from inherent tx
         let block_timestamp = Self::block_timestamp();
         let transaction_count = pending.len() as u128;
 

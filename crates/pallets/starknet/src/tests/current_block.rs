@@ -4,7 +4,7 @@ use mp_starknet::execution::types::Felt252Wrapper;
 use sp_core::U256;
 
 use super::mock::*;
-use crate::SEQUENCER_ADDRESS;
+use crate::SEQUENCER_ADDRESS_DEFAULT;
 
 #[test]
 fn given_normal_conditions_when_current_block_then_returns_correct_block() {
@@ -33,7 +33,7 @@ fn given_normal_conditions_when_current_block_then_returns_correct_block() {
                 "0x03ebee479332edbeecca7dee501cb507c69d51e0df116d28ae84cd2671dfef02",
             )
             .unwrap(),
-            sequencer_address: Felt252Wrapper::try_from(&SEQUENCER_ADDRESS).unwrap(),
+            sequencer_address: Felt252Wrapper::try_from(&SEQUENCER_ADDRESS_DEFAULT).unwrap(),
             ..StarknetHeader::default()
         };
 
